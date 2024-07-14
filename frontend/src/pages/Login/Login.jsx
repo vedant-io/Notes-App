@@ -1,26 +1,23 @@
-
-import { useState } from 'react'
-import NavBar from "../../components/Navbar/NavBar"
-import { Link } from 'react-router-dom'
-import PasswordInput from '../../components/Input/PasswordInput'
-import { validatEmail } from '../../utils/helper'
+import { useState } from "react";
+import NavBar from "../../components/Navbar/NavBar";
+import { Link } from "react-router-dom";
+import PasswordInput from "../../components/Input/PasswordInput";
+import { validatEmail } from "../../utils/helper";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
-  const [email,setEmail] = useState('');
-  const [password,setPassword] = useState('');
-  const [error,setError] = useState(null);
-
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if(!validatEmail(email)){
+    if (!validatEmail(email)) {
       setError("Please enter a valid email");
       return;
     }
 
-    if(!password){
+    if (!password) {
       setError("Please enter a password");
       return;
     }
@@ -28,37 +25,47 @@ const Login = () => {
     setError(null);
 
     //Login API Call
-  }
+  };
 
   return (
     <>
-        <NavBar/>
-        <div className='flex items-center justify-center mt-28'>
-            <div className='w-96 border rounded bg-white px-7 py-18'>
-              <form onSubmit={handleSubmit}>
-                  <h4 className='text-2xl mb-7 mt-5 '>Login</h4>
-                  <input type='text' placeholder='Email' className='input-box'
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}/>
+      <NavBar />
+      <div className="flex items-center justify-center mt-28">
+        <div className="w-96 border rounded bg-white px-7 py-18">
+          <form onSubmit={handleLogin}>
+            <h4 className="text-2xl mb-7 mt-5 ">Login</h4>
+            <input
+              type="text"
+              placeholder="Email"
+              className="input-box"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-                  <PasswordInput 
-                  value={password} 
-                  onChange={(e) => 
-                    setPassword(e.target.value)
-                  }/>
+            <PasswordInput
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-                  {error && <p className='text-red-500 text-xs pb-1'>{error}</p>}
+            {error && <p className="text-red-500 text-xs pb-1">{error}</p>}
 
-                  <button type="submit"className='btn-primary'>Login</button> 
-                  <p className='text-sm text-center m-4'>
-                    Not Registered yet?{""}
-                      <Link to='/signup' className='font-medium text-primary underline text-blue-500'>Create an Account!!</Link>
-                  </p>
-              </form>
-            </div>
+            <button type="submit" className="btn-primary">
+              Login
+            </button>
+            <p className="text-sm text-center m-4">
+              Not Registered yet?{" "}
+              <Link
+                to="/signup"
+                className="font-medium text-primary underline text-blue-500"
+              >
+                Create an Account!!
+              </Link>
+            </p>
+          </form>
         </div>
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
