@@ -1,18 +1,21 @@
 import { useState } from "react";
 import NavBar from "../../components/Navbar/NavBar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordInput from "../../components/Input/PasswordInput";
-import { validatEmail } from "../../utils/helper";
+import { validateEmail } from "../../utils/helper";
+import axiosInstance from "../../utils/axiosInstance";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
+  const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (!validatEmail(email)) {
+    if (!validateEmail(email)) {
       setError("Please enter a valid email");
       return;
     }
@@ -24,7 +27,29 @@ const Login = () => {
 
     setError(null);
 
-    //Login API Call
+    // Login API Call
+    try {
+      const response = await axiosInstance.post("/login", {
+        email: email,
+        password: password,
+      });
+      // Handle Successful login response
+      if (response.data && response.data.accessToken) {
+        localStorage.setItem("token", response.data.accessToken);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      // Handle Login Error
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
+    }
   };
 
   return (
@@ -33,7 +58,7 @@ const Login = () => {
       <div className="flex items-center justify-center mt-28">
         <div className="w-96 border rounded bg-white px-7 py-18">
           <form onSubmit={handleLogin}>
-            <h4 className="text-2xl mb-7 mt-5 ">Login</h4>
+            <h4 className="text-2xl mb-7 mt-5">Login</h4>
             <input
               type="text"
               placeholder="Email"
